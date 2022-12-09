@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Class that defines various class methods to solve AoC D05P1
+# Class that defines various class methods to solve AoC D05P2
 class Day05Problem1
   attr_accessor :stacks
 
@@ -42,10 +42,12 @@ class Day05Problem1
       next unless line.start_with?('m')
 
       command_values = line.match(/\D+(\d+)\D+(\d+)\D+(\d+)/).captures.map(&:to_i)
-      command_values[0].times do
-        value_to_move = stacks[command_values[1] - 1].pop
-        stacks[command_values[2] - 1].push(value_to_move) if value_to_move
-      end
+      from_stack = command_values[1] - 1
+      to_stack = command_values[2] - 1
+      number_to_move = command_values[0] < stacks[from_stack].length ? command_values[0] : stacks[from_stack].length
+      values_to_move = stacks[from_stack][-number_to_move..]
+      stacks[from_stack] = stacks[from_stack][(0...-number_to_move)]
+      stacks[to_stack].concat(values_to_move) if values_to_move
     end
   end
 
@@ -60,9 +62,5 @@ end
 
 file_name = 'Day05/day05.in'
 problem = Day05Problem1.new(file_name: file_name)
-puts problem.to_s
-puts
 problem.run_operations(file_name: file_name)
-puts problem.to_s
-puts
 puts problem.end_message
